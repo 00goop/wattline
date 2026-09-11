@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+maplibregl.setWorkerUrl(workerUrl)
 import Legend from './Legend.jsx'
 
 // CARTO dark-matter: vector basemap, no token (D-008: no Mapbox).
@@ -77,7 +79,8 @@ export default function MapView({ npus, exposure, sites, selectedId, onSelect })
   // map handlers bind once (source setup) — keep the latest callback reachable
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(0)
+  const [mapNotice, setMapNotice] = useState('Loading map…')
   const [tip, setTip] = useState(null)
   // F5: dispatch lines are opt-in — the button press is the demo beat
   const [dispatchOn, setDispatchOn] = useState(false)
@@ -148,10 +151,18 @@ export default function MapView({ npus, exposure, sites, selectedId, onSelect })
       new maplibregl.NavigationControl({ visualizePitch: true }),
       'bottom-right',
     )
-    map.on('load', () => setReady(true))
+    map.on('style.load', () => { setReady(version => version + 1); setMapNotice('') })
+    const fallbackTimer = setTimeout(() => {
+      if (!map.isStyleLoaded()) {
+        map.setStyle({ version: 8, sources: {}, layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#101c20' } }] })
+        setMapNotice('Street basemap unavailable. Neighborhood and site data remain available.')
+      }
+    }, 8000)
+    map.on('error', () => setMapNotice('Some map tiles could not load. Neighborhood details are available in the list.'))
     mapRef.current = map
     window.__wl_map = map // headless-verification handle
     return () => {
+      clearTimeout(fallbackTimer)
       map.remove()
       mapRef.current = null
       setReady(false)
@@ -439,6 +450,7 @@ export default function MapView({ npus, exposure, sites, selectedId, onSelect })
   return (
     <div className="map-wrap">
       <div ref={containerRef} className="map" />
+      {mapNotice && <div role="status" className="map-notice">{mapNotice}</div>}
       {npus && <Legend />}
       {sites && (
         <div className="map-controls">
@@ -500,3 +512,4 @@ export default function MapView({ npus, exposure, sites, selectedId, onSelect })
     </div>
   )
 }
+

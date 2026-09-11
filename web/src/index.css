@@ -149,3 +149,9 @@ body, html, #root {
   display: inline-block;
   animation: pulse-red 1.8s infinite;
 }
+
+.brand-home { background: transparent; border: 0; color: inherit; cursor: pointer; padding: 0; }
+.map-loading { display: grid; place-items: center; color: #e8b75d; }
+.map-notice { position: absolute; z-index: 2; top: 64px; left: 14px; right: 14px; padding: 10px 14px; background: #182a30; color: #e8dfc8; border: 1px solid #537078; border-radius: 6px; font-size: 13px; }
+:focus-visible { outline: 2px solid #f2bb57; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import {
   fetchNpus,
   fetchStats,
@@ -8,7 +8,7 @@ import {
 } from './api.js'
 import Header from './components/Header.jsx'
 import Sidebar from './components/Sidebar.jsx'
-import MapView from './components/MapView.jsx'
+const MapView = lazy(() => import('./components/MapView.jsx'))
 import Scrubber from './components/Scrubber.jsx'
 import NpuDetailPanel from './components/NpuDetailPanel.jsx'
 import Landing from './components/Landing.jsx'
@@ -91,7 +91,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header stats={stats} mock={mock} exposure={exposure} />
+      <Header stats={stats} mock={mock} exposure={exposure} onHome={() => setView('landing')} />
       <div className="main">
         <Sidebar
           npus={npus}
@@ -99,6 +99,7 @@ export default function App() {
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
+        <Suspense fallback={<div className="map-wrap map-loading" role="status">Preparing the exposure map…</div>}>
         <MapView
           npus={npus}
           exposure={exposure}
@@ -106,6 +107,7 @@ export default function App() {
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
+        </Suspense>
         {selectedNpu && (
           <NpuDetailPanel
             npu={selectedNpu}

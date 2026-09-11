@@ -1,6 +1,6 @@
 const fmt = (n) => (n == null ? '—' : n.toLocaleString('en-US'))
 
-export default function Header({ stats, mock, exposure }) {
+export default function Header({ stats, mock, exposure, onHome }) {
   // Live count at the scrubbed hour once the series is loaded; the static
   // /api/stats number is the pre-load fallback.
   const npusCritical = exposure
@@ -9,9 +9,9 @@ export default function Header({ stats, mock, exposure }) {
   return (
     <header className="header">
       <div className="brand">
-        <h1>
+        <button className="brand-home" onClick={onHome} aria-label="Back to Wattline overview"><h1>
           WATT<span className="line">LINE</span>
-        </h1>
+        </h1></button>
         <span className="tagline">Atlanta · Outage Exposure</span>
         {mock && <span className="mock-chip">mock data</span>}
       </div>

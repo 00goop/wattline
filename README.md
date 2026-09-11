@@ -1,16 +1,8 @@
-<!-- ═══════════════════════════════════════════════════════════════════
-  SUBMISSION TODOs — delete this comment block once #2 lands:
-  1. DONE — live demo URL is in (Render blueprint, auto-deploys from main)
-  2. Video URL      (Kareem, must be PUBLIC — unlisted does not count)
-  3. DONE — docs/demo.png is in and the image line is uncommented
-  4. Tiger Data was not adopted — nothing to add to Architecture
-═══════════════════════════════════════════════════════════════════ -->
-
 # WATTLINE
 
 **When the power goes out, some people are on a clock. Nobody is counting.**
 
-[**Live demo**](https://wattline-web.onrender.com) · [2-minute video](#) · Built at Hack RenderATL, August 2026
+[**Live demo**](https://wattline-web.onrender.com) · Built at Hack RenderATL, August 2026
 
 ![Wattline Outage Exposure Map](docs/demo.png)
 
@@ -147,3 +139,27 @@ Vinh Le · Niko · Guttu · Kareem
 ## License
 
 MIT
+
+## Fork modernization and verification
+
+This portfolio branch belongs to **00goop/wattline**, a fork of
+[vinhbin/wattline](https://github.com/vinhbin/wattline). The original team and
+architecture are preserved. Guttu owned API/Render/Devpost, Kareem Atlanta layers,
+sites and exposure work, Niko emPOWER/disaggregation, and Vinh the frontend.
+
+Run `python -m pytest tests -q` after installing both requirements files and `httpx`.
+Run `npm ci && npm run build` inside `web/`. CI checks the existing pipeline
+invariants plus API hours 0–24, read-only methods, source selection and invalid-data
+fallback. A parsed but invalid top-level processed payload now falls back to mocks;
+health reports which source loaded. This is contract validation, not a complete
+geospatial data-quality certification. No pipeline work runs in request handlers.
+
+The linked deployment is historical and has not been redeployed by this branch.
+The award and contribution descriptions in the supplied resume remain attributed
+to the original team; later verification work does not establish historical authorship.
+
+The frontend uses patched MapLibre 6 with a bundled module worker and loads the
+map only when requested. Initial JavaScript build output decreased from 1.24 MB to
+211 KB uncompressed in the local verification build (not a measured page-load time).
+A street-basemap failure falls back to a plain background and retains local overlays.
+See [MapLibre advisory](https://github.com/maplibre/maplibre-gl-js/security/advisories/GHSA-jrc7-96c5-q579).

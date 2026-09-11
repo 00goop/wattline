@@ -19,6 +19,24 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCES: dict[str, str] = {}
 
 
+def valid_shape(name, data):
+    """Reject parseable but unusable top-level payloads before serving them."""
+    if not isinstance(data, dict):
+        return False
+    if name == 'npus':
+        return data.get('type') == 'FeatureCollection' and isinstance(data.get('features'), list)
+    if name == 'sites':
+        return isinstance(data.get('sites'), list)
+    if name == 'exposure':
+        return all(isinstance(data.get(str(hour)), dict)
+                   and data[str(hour)].get('hour') == hour
+                   and isinstance(data[str(hour)].get('npus'), list) for hour in range(25))
+    if name == 'stats':
+        return all(isinstance(data.get(key), (int, float)) and not isinstance(data[key], bool)
+                   and data[key] >= 0 for key in ('georgia_total', 'metro_atlanta_total'))
+    return False
+
+
 def load(name: str):
     """First readable source wins. A malformed data/processed/ drop falls back
     to mocks rather than killing the service mid-demo (D-007)."""
@@ -29,6 +47,8 @@ def load(name: str):
         try:
             data = json.loads(p.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
+            continue
+        if not valid_shape(name, data):
             continue
         SOURCES[name] = base.name
         return data
