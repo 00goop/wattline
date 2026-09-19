@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 // The fetch layer falls back to bundled mocks if the API is down,
 // so the frontend never blocks on the pipeline.
 export default defineConfig({
+  worker: { format: 'es' },
   plugins: [react()],
   server: {
     proxy: {

@@ -25,6 +25,19 @@ When two artifacts disagree, the higher one wins. Fix the LOWER artifact to matc
 
 ## Status snapshot (APPEND a new dated block on top; never overwrite)
 
+
+### Wave handoff — 2026-09-11 portfolio fork verification
+
+**This wave:** Guttu's portfolio modernization in `00goop/wattline` only.
+**Done since last:** 58 API/pipeline tests pass; frontend production build and npm audit pass. Upgraded Vite and patched MapLibre, explicitly bundled its module worker, lazy-loaded the map, added overview navigation, focus/reduced-motion support and basemap fallback status. Browser verified visible geometry and neighborhood detail.
+**In progress:** Draft PR and GitHub CI verification.
+**Blocked on:** Nothing for this review branch; deployment remains separate.
+**I need from you:** Nothing. Handoff for Guttu (API/Render/Devpost), Kareem (layers/sites/GTFS/exposure/video), Niko (emPOWER/B3), Vinh (frontend).
+**Decisions logged:** None; D-006 and D-008 preserved.
+**Contract changes:** None; invalid top-level processed payloads now fall back to existing mocks.
+**Next milestone:** Review CI and the fork PR; no upstream changes or deployment.
+
+
 ### 2026-08-12 ~7:20 PM — Removed dead PostGIS code; drop postgres/postgis from "Built with" (Niko)
 
 - **Confirmed the PostGIS path never ran** — gated behind `DATABASE_URL` in
